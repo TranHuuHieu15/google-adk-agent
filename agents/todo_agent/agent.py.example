@@ -1,0 +1,47 @@
+import sys
+from pathlib import Path
+
+# Thêm thư mục gốc vào sys.path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
+from google.adk.agents.llm_agent import Agent
+from agents.hr_agent.agent import root_agent as hr_root_agent
+from agents.leave_agent.agent import root_agent as leave_root_agent
+
+def construct_todo_instruction():
+    """
+    Tạo cấu trúc hướng dẫn cho todo agent
+    1. Phân tích yêu cầu của người dùng
+    2. Liệt kê các nhiệm vụ cần thực hiện dựa vào yêu cầu và so sánh với HR agent và Leave agent
+    3. Trả về dưới dạng danh sách công việc chi tiết dưới dạng json
+    """
+    return """
+    Hãy phân tích yêu cầu của người dùng và liệt kê các nhiệm vụ cần thực hiện dưới dạng to-do list rõ ràng và chi tiết. Dựa vào thông tin từ các sub-agent HR và Leave để tạo ra to-do list phù hợp
+    Mỗi nhiệm vụ trong to-do list nên bao gồm tiêu đề nhiệm vụ và mô tả ngắn gọn về nhiệm vụ đó.
+    Trả về to-do list dưới dạng json.
+    Cấu trúc json như sau:
+    {
+        "todo_list": [
+            {
+                "task_id": "<ID nhiệm vụ>",
+                "task_title": "<Tiêu đề nhiệm vụ>",
+                "task_description": "<Mô tả nhiệm vụ>"
+            },
+            ...
+        ]
+    }
+    Sau khi có to-do list, HÃY TRẢ VỀ CHO ORCHESTRATOR AGENT ĐỂ THỰC HIỆN THEO CÁC TASK ĐÃ TẠO.
+    """
+
+root_agent = Agent(
+    model='gemini-2.5-flash',
+    name='Todo_Agent',
+    description='Bạn là một trợ lý đảm nhận nhiệm vụ liệt kê ra to-do list cho orchestrator agent dựa trên yêu cầu của người dùng.',
+    instruction='Bạn là một trợ lý đảm nhận nhiệm vụ liệt kê ra to-do list cho orchestrator agent dựa trên yêu cầu của người dùng.' \
+    ' Hãy phân tích yêu cầu của người dùng và liệt kê các nhiệm vụ cần thực hiện dưới dạng to-do list rõ ràng và chi tiết.' \
+    ' Dựa vào thông tin từ các sub-agent HR và Leave để tạo ra to-do list phù hợp.' \
+    ' Mỗi nhiệm vụ trong to-do list nên bao gồm tiêu đề nhiệm vụ và mô tả ngắn gọn về nhiệm vụ đó.' \
+    ' Trả về to-do list dưới dạng json.',
+    sub_agents=[hr_root_agent, leave_root_agent],
+    tools=[construct_todo_instruction],
+)

@@ -1,0 +1,20 @@
+import sys
+from pathlib import Path
+
+# Thêm thư mục gốc vào sys.path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
+from google.adk.agents.llm_agent import Agent
+from agents.todo_agent.agent import root_agent as todo_root_agent
+
+root_agent = Agent(
+    model='gemini-2.5-flash',
+    name='Orchestrator_Agent',
+    description='Bạn là một trợ lý chính của công ty Classmethod Da Nang, chịu trách nhiệm điều phối và quản lý các tác vụ, yêu cầu của người dùng một cách hiệu quả.',
+    instruction="""
+    Bạn là một trợ lý chính của công ty Classmethod Da Nang, chịu trách nhiệm điều phối và quản lý các tác vụ, yêu cầu của người dùng một cách hiệu quả.
+    Khi nhận được yêu cầu từ người dùng, hãy gửi thông tin đến Todo_Agent và hãy làm theo các bước được cung cấp từ todo-agent để phản hồi được yêu cầu
+    của người dùng một cách chính xác và đầy đủ nhất.
+    """,
+    sub_agents=[todo_root_agent],
+)
