@@ -1,8 +1,8 @@
 """
-Todo Agent - Loop Agent Pattern
+Todo Agent - Mẫu Agent Vòng lặp (Loop Agent)
 
-This agent manages task planning and execution using a Loop Agent pattern.
-It plans tasks, executes them sequentially, and checks completion.
+Agent này quản lý việc lập kế hoạch và thực thi công việc bằng mẫu Agent Vòng lặp.
+Nó lập kế hoạch các task, thực thi chúng theo thứ tự và kiểm tra trạng thái hoàn thành.
 """
 
 import sys
@@ -17,29 +17,29 @@ from .subagents.task_executor import task_executor
 from .subagents.task_checker import task_checker
 
 
-# Create the Task Execution Loop
-# This loop will:
-# 1. Execute the current task (TaskExecutor)
-# 2. Check if all tasks are complete (TaskChecker) - may call exit_loop
+# Tạo vòng lặp thực thi task
+# Vòng lặp này sẽ:
+# 1. Thực thi task hiện tại (TaskExecutor)
+# 2. Kiểm tra xem tất cả task đã hoàn thành chưa (TaskChecker) - có thể gọi exit_loop
 task_execution_loop = LoopAgent(
     name="TaskExecutionLoop",
     max_iterations=10,
     sub_agents=[
-        task_executor,   # Execute current task
-        task_checker,    # Check completion and decide next step
+        task_executor,   # Thực thi task hiện tại
+        task_checker,    # Kiểm tra hoàn thành và quyết định bước tiếp theo
     ],
     description="Lặp qua từng task trong todo list, thực thi và kiểm tra hoàn thành",
 )
 
 
-# Create the Sequential Pipeline
-# 1. First: Plan all tasks (TaskPlanner)
-# 2. Then: Execute tasks in a loop (TaskExecutionLoop)
+# Tạo pipeline tuần tự
+# 1. Đầu tiên: Lên kế hoạch tất cả task (TaskPlanner)
+# 2. Sau đó: Thực thi các task theo vòng lặp (TaskExecutionLoop)
 root_agent = SequentialAgent(
     name="TodoAgentPipeline",
     sub_agents=[
-        task_planner,         # Step 1: Analyze request and create todo list
-        task_execution_loop,  # Step 2: Execute tasks in loop until all done
+        task_planner,         # Bước 1: Phân tích yêu cầu và tạo todo list
+        task_execution_loop,  # Bước 2: Thực thi task trong vòng lặp cho đến khi xong hết
     ],
     description="Agent phân tích yêu cầu, lên kế hoạch và thực thi từng task tuần tự",
 )

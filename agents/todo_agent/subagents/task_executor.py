@@ -1,7 +1,7 @@
 """
 Task Executor Agent
 
-This agent executes individual tasks by delegating to appropriate sub-agents.
+Agent này thực thi từng tác vụ bằng cách ủy quyền cho các sub-agent phù hợp.
 """
 
 import sys
@@ -17,7 +17,7 @@ GEMINI_MODEL = "gemini-2.5-flash"
 
 task_executor = LlmAgent(
     model=GEMINI_MODEL,
-    name="TaskExecutor",
+    name="task_executor",
     description="Agent thực thi từng task bằng cách gọi sub-agent phù hợp",
     instruction="""
     Bạn là Task Executor - Thực thi các task trong todo_plan.

@@ -1,7 +1,7 @@
 """
-Tools for Todo Agent
+Công cụ cho Todo Agent
 
-Provides utilities for task management and loop control.
+Cung cấp các tiện ích để quản lý tác vụ và điều khiển vòng lặp.
 """
 
 from typing import Any, Dict
@@ -10,87 +10,79 @@ from google.adk.tools.tool_context import ToolContext
 
 def exit_loop(tool_context: ToolContext) -> Dict[str, Any]:
     """
-    Call this function ONLY when ALL tasks in the todo list have been completed.
-    This signals the iterative process should end.
+    Chỉ gọi hàm này khi TẤT CẢ các tác vụ trong danh sách todo đã được hoàn thành.
+    Điều này báo hiệu rằng quá trình lặp nên kết thúc.
 
     Args:
-        tool_context: Context for tool execution
+        tool_context: Ngữ cảnh để thực thi công cụ
 
     Returns:
-        Empty dictionary
+        Từ điển (dict) phản hồi trạng thái hoàn thành
     """
-    print("\n=========== EXIT LOOP TRIGGERED ===========")
-    print("All tasks completed successfully!")
-    print("Loop will exit now")
-    print("============================================\n")
 
     tool_context.actions.escalate = True
-    return {"status": "completed", "message": "All tasks have been completed. Exiting loop."}
+    return {"status": "completed", "message": "Tất cả tác vụ đã hoàn thành. Thoát vòng lặp."}
 
 
 def update_task_status(
-    task_id: str, 
-    status: str, 
+    task_id: str,
+    status: str,
     result: str,
     tool_context: ToolContext
 ) -> Dict[str, Any]:
     """
-    Update the status of a specific task in the todo list.
+    Cập nhật trạng thái của một tác vụ cụ thể trong danh sách todo.
 
     Args:
-        task_id: The ID of the task to update
-        status: New status ('pending', 'in_progress', 'completed', 'failed')
-        result: The result or output of the task
-        tool_context: Context for accessing and updating session state
+        task_id: ID của tác vụ cần cập nhật
+        status: Trạng thái mới ('pending', 'in_progress', 'completed', 'failed')
+        result: Kết quả hoặc đầu ra của tác vụ
+        tool_context: Ngữ cảnh để truy cập và cập nhật trạng thái phiên (session)
 
     Returns:
-        Dict with update confirmation
+        Dict xác nhận việc cập nhật
     """
-    print(f"\n----------- TASK UPDATE -----------")
-    print(f"Task {task_id}: {status}")
-    print(f"Result: {result[:100]}..." if len(result) > 100 else f"Result: {result}")
-    print("-----------------------------------\n")
 
-    # Update state
+    # Cập nhật state
     if "task_results" not in tool_context.state:
         tool_context.state["task_results"] = {}
-    
+
     tool_context.state["task_results"][task_id] = {
         "status": status,
         "result": result
     }
-    
+
     return {
         "task_id": task_id,
         "status": status,
-        "message": f"Task {task_id} updated to {status}"
+        "message": f"Tác vụ {task_id} đã được cập nhật sang trạng thái {status}"
     }
 
 
 def get_current_task(tool_context: ToolContext) -> Dict[str, Any]:
     """
-    Get the next pending task from the todo list.
+    Lấy tác vụ đang chờ tiếp theo từ danh sách todo.
 
     Args:
-        tool_context: Context for accessing session state
+        tool_context: Ngữ cảnh để truy cập trạng thái phiên (session)
 
     Returns:
-        Dict with current task info or completion status
+        Dict chứa thông tin tác vụ hiện tại hoặc trạng thái hoàn thành
     """
     todo_list = tool_context.state.get("todo_list", [])
     task_results = tool_context.state.get("task_results", {})
-    
+
     for task in todo_list:
         task_id = task.get("task_id")
         if task_id not in task_results or task_results[task_id].get("status") != "completed":
             return {
                 "has_pending": True,
                 "current_task": task,
-                "message": f"Next task: {task.get('task_title')}"
+                "message": f"Tác vụ tiếp theo: {task.get('task_title')}"
             }
-    
+
     return {
         "has_pending": False,
         "current_task": None,
-        "message": "All tasks completed!"
+        "message": "Tất cả tác vụ đã hoàn thành!"
     }

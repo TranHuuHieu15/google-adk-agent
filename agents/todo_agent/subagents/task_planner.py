@@ -1,7 +1,7 @@
 """
-Task Planner Agent
+Agent Lập Kế Hoạch Công Việc (Task Planner)
 
-This agent analyzes user requests and creates a detailed todo list.
+Agent này phân tích yêu cầu của người dùng và tạo danh sách việc cần làm (todo) chi tiết.
 """
 
 from google.adk.agents.llm_agent import LlmAgent
@@ -10,7 +10,7 @@ GEMINI_MODEL = "gemini-2.5-flash"
 
 task_planner = LlmAgent(
     model=GEMINI_MODEL,
-    name="TaskPlanner",
+    name="task_planner",
     description="Agent phân tích yêu cầu và tạo to-do list chi tiết",
     instruction="""
     Bạn là Task Planner - Người phân tích và lập kế hoạch công việc.

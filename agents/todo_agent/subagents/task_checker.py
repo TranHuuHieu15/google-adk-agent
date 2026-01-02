@@ -1,7 +1,7 @@
 """
 Task Checker Agent
 
-This agent checks task completion and decides whether to continue or exit the loop.
+Agent này kiểm tra tiến độ task và quyết định tiếp tục hoặc kết thúc loop.
 """
 
 from google.adk.agents.llm_agent import LlmAgent
@@ -11,7 +11,7 @@ GEMINI_MODEL = "gemini-2.5-flash"
 
 task_checker = LlmAgent(
     model=GEMINI_MODEL,
-    name="TaskChecker",
+    name="task_checker",
     description="Agent kiểm tra tiến độ task và quyết định tiếp tục hoặc kết thúc loop",
     instruction="""
     Bạn là Task Checker - Người kiểm tra tiến độ và quyết định luồng xử lý.
